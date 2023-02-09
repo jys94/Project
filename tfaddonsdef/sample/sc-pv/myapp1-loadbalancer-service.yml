@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: myapp1-clb-service
+  annotations:
+    external-dns.alpha.kubernetes.io/hostname: clb.eksinfra.com
+spec:
+  selector:
+    app: myapp1
+  ports:
+  - port: 80
+    targetPort: 80
+  type: LoadBalancer

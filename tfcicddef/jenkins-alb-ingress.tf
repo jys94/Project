@@ -7,7 +7,7 @@ resource "kubernetes_ingress_v1" "ingress" {
       "alb.ingress.kubernetes.io/target-type" = "instance"  # Target Group's Target Type
       "alb.ingress.kubernetes.io/load-balancer-name" = "eks-alb-ingress"  # Load Balancer Name
       ## Health Check Settings
-      "alb.ingress.kubernetes.io/healthcheck-protocol" =  "HTTP"
+      "alb.ingress.kubernetes.io/healthcheck-protocol" = "HTTP"
       "alb.ingress.kubernetes.io/healthcheck-port" = "traffic-port"
       "alb.ingress.kubernetes.io/healthcheck-interval-seconds" = 15
       "alb.ingress.kubernetes.io/healthcheck-timeout-seconds" = 5

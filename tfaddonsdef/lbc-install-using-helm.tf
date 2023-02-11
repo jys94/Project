@@ -1,6 +1,6 @@
 # Install AWS Load Balancer Controller using HELM
 resource "helm_release" "loadbalancer_controller" {
-  depends_on = [aws_iam_role.lbc_iam_role]            
+  depends_on = [aws_iam_role.lbc_iam_role]
   name       = "aws-load-balancer-controller"
   repository = "https://aws.github.io/eks-charts"
   chart      = "aws-load-balancer-controller"
@@ -9,7 +9,7 @@ resource "helm_release" "loadbalancer_controller" {
   # Value changes based on your Region (Below is for ap-northeast-2)
   set {
     name = "image.repository"
-    value = "602401143452.dkr.ecr.ap-northeast-2.amazonaws.com/amazon/aws-load-balancer-controller" 
+    value = "602401143452.dkr.ecr.ap-northeast-2.amazonaws.com/amazon/aws-load-balancer-controller"
   }
   set {
     name  = "serviceAccount.create"

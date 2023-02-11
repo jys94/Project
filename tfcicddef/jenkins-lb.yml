@@ -1,0 +1,23 @@
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    external-dns.alpha.kubernetes.io/hostname: www.lishprj.link
+  labels:
+    app.kubernetes.io/component: jenkins-master
+    app.kubernetes.io/instance: jenkins
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: jenkins
+    helm.sh/chart: jenkins-2.7.1
+  name: jenkins-lb
+spec:
+  ports:
+  - port: 80
+    protocol: TCP
+    targetPort: 8080
+  selector:
+    app.kubernetes.io/component: jenkins-master
+    app.kubernetes.io/instance: jenkins
+  type: LoadBalancer
+status:
+  loadBalancer: {}

@@ -3,7 +3,7 @@ resource "helm_release" "kibana" {
   name       = "kibana"
   repository = "https://helm.elastic.co"
   chart      = "kibana"
-  # namespace = "kube-system"
+  version    = "8.5.1"
 
   set {
     name  = "service.type"

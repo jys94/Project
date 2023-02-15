@@ -3,9 +3,10 @@ resource "helm_release" "fluentd" {
   name       = "fluentd"
   repository = "https://charts.bitnami.com/bitnami"
   chart      = "fluentd"
+  version    = "5.5.14"
   
   set {
     name  = "forwarder.configMap"
-    value = "elasticsearch-output"
+    value = "fluentd-forwarder-cm"
   }
 }

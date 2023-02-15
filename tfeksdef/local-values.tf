@@ -13,7 +13,8 @@ locals {
     web        = "nodegroup-web",
     was        = "nodegroup-was",
     cicd       = "nodegroup-cicd",
-    monitoring = "nodegroup-monitoring"
+    monitoring = "nodegroup-monitoring",
+    logging    = "nodegroup-logging"
   }
   ngs = { for ng in var.provision-ngs: ng => local.node_groups[ng]}
 }

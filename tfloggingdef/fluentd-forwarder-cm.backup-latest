@@ -4,6 +4,15 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: fluentd-forwarder-cm
+  labels:
+    app.kubernetes.io/component: forwarder
+    app.kubernetes.io/instance: fluentd
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: fluentd
+    helm.sh/chart: fluentd-5.5.14
+  annotations:
+    meta.helm.sh/release-name: fluentd
+    meta.helm.sh/release-namespace: default
 data:
   fluentd-inputs.conf: |
     # HTTP input for the liveness and readiness probes
@@ -20,8 +29,13 @@ data:
       pos_file /opt/bitnami/fluentd/logs/buffers/fluentd-docker.pos
       tag kubernetes.*
       read_from_head true
+      # <parse>
+      #   @type json
+      #   time_key time
+      #   time_format %Y-%m-%dT%H:%M:%S.%NZ
+      # </parse>
       format json
-    </source>    
+    </source>
     # enrich with kubernetes metadata
     <filter kubernetes.**>
       @type kubernetes_metadata
@@ -29,37 +43,28 @@ data:
   fluentd-output.conf: |
     # Throw the healthcheck to the standard output instead of forwarding it
     <match fluentd.healthcheck>
+      # @type stdout
       @type null
     </match>
-    # Forward all logs to the Elasticsearch
-    <match kubernetes.var.log.containers.**_kube-system_**>
+    # Forward all logs to the aggregators
+    <match **>
       @type elasticsearch
+      # host "elasticsearch-master.default.svc.cluster.local"
       host "elastic.lishprj.link"
+      # port "9200"
       port "443"
       scheme https
       user elastic
       password elastic
-      index_name "controlplane-logs"
-      include_tag_key true
-      <buffer>
-        @type file
-        path /opt/bitnami/fluentd/logs/buffers/controlplane-logs.buffer
-        flush_thread_count 2
-        flush_interval 5s
-      </buffer>
-    </match>
-    <match kubernetes.var.log.containers.**_default_**>
-      @type elasticsearch
-      host "elastic.lishprj.link"
-      port "443"
-      scheme https
-      user elastic
-      password elastic
+      # verify_es_version_at_startup false
+      # default_elasticsearch_version 8
       index_name "app-logs"
       include_tag_key true
+      # logstash_format true
+
       <buffer>
         @type file
-        path /opt/bitnami/fluentd/logs/buffers/app-logs.buffer
+        path /opt/bitnami/fluentd/logs/buffers/logs.buffer
         flush_thread_count 2
         flush_interval 5s
       </buffer>
@@ -69,6 +74,7 @@ data:
     <match fluent.**>
       @type null
     </match>
+
     @include fluentd-inputs.conf
     @include fluentd-output.conf
 YAML
